@@ -1,0 +1,560 @@
+Configuration Meta Data :     XML Configuration         : All configuration consolidated at one place, Performance is High, redability is High and redundancy is also high
+                              Annotation Configuration  : Time Saving, redundancy is low but also perfoamce is also as spring has to scan all the packages to get configuration
+                              Java Based Configuration  :
+
+Two types of containers :  Application Context 
+                           Bean Factory    
+                           
+Feature	                                     BeanFactory                               	ApplicationContext
+Definition                   	Basic container providing bean instantiation	        Advanced container built on top of BeanFactory
+Eager vs Lazy Initialization	Lazy (beans are created when requested)                	Eager (beans are created at startup by default)
+Internationalization	        ❌ Not supported	                                        ✅ Supported (MessageSource)
+Event Handling	                ❌ Not supported                                        	✅ Supported (publishing and listening to events)
+BeanPostProcessor Support     	❌ Must be manually registered	                        ✅ Automatically detects and registers
+AOP Support                   	❌ Limited	                                            ✅ Fully supported
+Use Case	                    Lightweight applications or legacy code                 Modern Spring applications (including Spring Boot)
+
+
+
+What is Spring Boot ? Why Did you use Spring boot in your Project but not Spring ? 
+
+Spring boot is spring module. 
+Elaborate -Spring boot is Framework for RAD build using Spring framework with extra support of auto-configuration and embedded application server (like tomcat and Jetty) 
+
+Spring boot supports RAD( Rapid Application Development) 
+It helps us creating efficient stand alone applications which you can just run it basically removes lot of configuration and dependencies.
+
+
+RAD is modified waterfall model which focused on developing software in a short span of time.
+
+Phases of Rapid Application Development. 
+
+Business Model :  Business model is designed for the product to be developed.
+Data Modeling:    Data Model is designed, The relation between these data objects are established using info gathered in first Phase.
+Process Modeling : Process description for adding, deleting, retrieving or modifying a data object are given.
+Application Generation : The actual product is built using coding, Convert process and data models into actual prototypes.
+Testing and Turnover: Product is tested and if changes are required then whole process starts again.
+
+
+3) Is this possible to change the port of Embedded Tomcat Server in Spring Boot.
+Yes, Default port is 8080
+To change port number we use server.port property in application.property file
+
+server.port=8082
+
+
+4. Can we override or replace the Embedded Tomcat Server in Spring Boot ?
+
+Yes, we can replace the Embedded tomcat server with any other server. you can use spring-boot-starter-jetty as s dependency for each project.
+
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jetty</artifactId>
+		</dependency>
+		
+		
+5. Can we disable the default web server in the spring boot application? 
+
+The major strong point in spring is to provide flexibility to build your application loosely couple. 
+Spring provides features to disable the webserver in a quick configuration . Yes, we can use application.properties to configure the web application type. 
+spring.main.web-application.type=none
+
+
+6. How to Disable a specfic auto-configuration class ? 
+
+you can use exclude attribute in @EnableAutoConfiguration, if you find any specific auto-configuration classes that you dont want being applied. 
+By using "exclude"
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+
+7. what does @SpringbootApplication annotation do internally? 
+
+As per Spring Boot doc, the @SpringBootApplication annotation is equivalent to using @Configuration, @EnableAutoConfiguration, and @ComponentScan with their default attributes. 
+Spring boot enables the developer to use a single annotation instead of using multiple.
+But , as we know, Spring provided loosely coupled feature that we can use for each individual annotation as per our project needs.
+
+
+8. How to use a property defined in application.properties into your java class ?
+
+Use @Value annotation to accesss the  properties which is defined in the application-properties file.
+
+@Value("${server.port}")
+
+9.Explain @RestController annotation in Spring Boot? 
+
+@RestController is Convineneit  annotation for creating restful controllers. it is a specialization of @Component and is autodetected through classpath scanning. 
+
+Which eleminates the need to annotate every request handling method of the controller class with @ResponseBody annotation. 
+It is typically used in combination with annotated handler methods based on the @RequestMapping annotation.
+
+
+@RestController = @Controller + @ResponseBody
+
+@Controller  : Marks the class as a Spring MVC controller.
+@ResponseBody: Tells Spring to directly serialize the returned object into JSON/XML and send it in the HTTP response body.
+
+
+When to use:
+For REST APIs that return JSON or XML
+When you don’t need to render HTML pages (i.e., not using Thymeleaf or JSP)
+
+
+10 Difference between @Controller vs @RestController
+
+To answer this, first understand the difference between a web application and a Rest API. 
+It's that the response from a web application is generally view (HTML+CSS+JavaScript) because they are intended for human viewers while REST API just returns data in from of JSON or XML because most of the Rest Clients 
+
+Feature	                    @Controller	                                  @RestController
+Purpose                  	Handles web requests and returns views	       Handles REST APIs and returns data (JSON/XML)
+Returns	                    View (HTML/Thymeleaf, JSP)	                   Data (usually JSON or XML)
+View Resolver Used?       	✅ Yes	                                       ❌ No
+Annotation Combo	        Just @Controller                               @Controller + @ResponseBody
+Use Case	                Traditional web apps with UI	               RESTful APIs / SPA backends
+Serialization Needed?	   ❌ Usually returns ModelAndView	               ✅ Data auto-serialized to JSON/XML
+
+
+Use @Controller when you're building MVC apps with views.
+Use @RestController when you're building REST APIs returning JSON/XML.
+
+
+12. What is the use profiles in springboot ? 
+
+When working with enterprise, we typically deal with multiple environments such as Dev, QA and prod. The configuration properties for these environments are different. 
+
+To make this easy and clean, Spring has the provision of profiles, to help separate the configuration for each environment, so that instead of maintaining this programmatically. 
+the properties can be kept in separate files such as application-dev.properties, application-prod.properties. The default application.properties points to the currently active profile using spring.profiles.active so that the correct configuration is picked up.
+
+
+Spring Boot profiles allow you to define different configurations for different environments (like dev, test, prod), and activate them conditionally.
+To separate environment-specific configurations.
+Avoid hardcoding values like DB credentials, logging level, URLs, etc.
+Clean and maintainable configuration management.
+
+Spring profiles let you switch configurations cleanly per environment
+Useful for different DBs, logging configs, cache settings, API endpoints, etc.
+
+13. What is Spring Actuator and what are it's advantages ?
+
+Spring Boot Actuator is a subproject of Spring Boot.
+It provides production-ready features to help you monitor and manage your application.
+
+
+You can enable this feature by Adding spring-boot-starter-actuator dependency in pom.xml/gradle 
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+Exposes built-in endpoints for:
+
+Application health (/actuator/health)
+Metrics (/actuator/metrics)
+Environment (/actuator/env)
+Beans (/actuator/beans)
+Thread dumps, info, mappings, etc.
+Easily customizable and secure
+
+Customize Endpoints in application.properties: 
+
+#expose all endpoints 
+management.endpoints.web.exposure.include=*
+
+#expose only selected endpoints 
+management.endpoints.web.exposure.include=health,info,env,beans
+
+14. what is HTTP trace in Spring Boot ? 
+
+This will store the last 100 HTTP request-response exchanges into your memory 
+
+Before Spring 2.2.x when we include all actuator endpoints, httpTrace also included by default this captured data is stored in memory,
+hence it consumes much memory , That is why this feature is turned of by default and has to be turned on by the user explicitly, if needed.
+ 
+
+To fix this use just create the bean of HttpTraceRepository which is in memory repository. This will store the last 100 HTTP request-response exchanges into your memory. 
+ 
+ 
+ 15. How to change Actuator URL ? 
+ 
+ By default all endpoints comes in default context path of the application suffixed with /actuator. 
+ if for some reason we have existing endpoints in application starting with /actuator then we can customize the base path to something else. 
+ 
+ management.endpoints.web.base-path=/manage
+ 
+ Now we will be able to access all actuator endpoints under a new URL e.g
+ /manage/health
+
+ 16. How to change Actuator port for management  ? 
+management.server.port=8090
+
+17. How to create custom endpoints ? 
+
+This can be achieved by adding the following annotations.
+
+@Endpoint and @Component to class 
+@ReadOperation, @WriteOperation or @DeleteOperation on method level
+
+@ReadOperation maps to HTTP GET
+@WriteOperation maps to HTTP POST
+@DeleteOperation maps to HTTP DELETE
+
+By adding @Bean annotated with @Endpoint, any methods annotated with @ReadOperation, @WriteOperation, or @DeleteOperation are automatically exposed over JMX or HTTP.
+
+
+18) Steps to deploy Spring boot web application as JAR and WAR files ? 
+
+To deploy a Spring Boot web application, you just have to add the following plugin in the pom.xml file : 
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+By using the above plugin, you will get a JAR executing the package phase, 
+This JAR will contain all the necessary libraries and dependencies required, It will also contain an embedded server. 
+So, you can basically run the application like an ordinary JAR file. 
+
+Note: The packaging element in the pom.xml file must be set to jar build a JAR file as below 
+<packaging>jar</packaging> or <packaging>war</packaging>
+
+
+
+19) What is REST and RESTFUL? 
+
+REST represents Representational State Transfer (REST is transfer of State) 
+RestFUL web services are web services that follows REST architectural concept(stateless client-server architecture). 
+It is an architectural style for developing applications that can be accessed  over the network using http/https protocol
+
+
+REST is an architectural style for designing networked applications. It relies on stateless, client-server communication, usually over HTTP.
+
+Core Principles of REST:
+Stateless – No client context is stored on the server between requests.
+Client-Server – Separation of concerns (UI vs. data).
+Uniform Interface – Use of standard HTTP methods (GET, POST, PUT, DELETE).
+Cacheable – Responses must define if they're cacheable.
+Layered System – Client doesn’t need to know if it’s talking to the actual server or an intermediate.
+Code on Demand (optional) – Servers can send executable code (like JavaScript) to the client.
+
+
+A web service is RESTful if it adheres to REST principles. That means it uses:
+
+Correct HTTP methods
+Resources identified via URIs
+Proper status codes
+Stateless communication
+Data formats like JSON or XML
+
+20) What is REST resource ? 
+
+Every content in the REST architecture is considered as resource. 
+
+The resource == obj ect in the object-oriented programming world. 
+Can be represented as text files, HTML pages, images, or any other dynamic data. 
+
+The REST Server provides access to these resources where as The REST client consumes (accesses and modifies) these resources.
+ Every resource is identified globally by means of a URI.
+
+
+21. What is URI ? 
+
+uniform Resource Identifier is the full form of URI which is used for identifying each resource of REST architecture. URI is of the format: 
+
+<protocol>://<<service-name>>/<ResourceType>/<ResourceID>
+
+22. What are HTTP methods ? 
+
+CRUD (Create-Get, Retrieve-Get, Update- Put, Delete -Delete)
+
+GET  : This method is used for fetching details from the server and is basically a read-only operatio
+POST : This method is used for the creation of new Resource on the Server. 
+PUT  : This method is used to update the old/existing resource on the server or to replace the resource.
+
+23. Difference between patch and Put in http methods ?
+
+ ✅ PUT vs PATCH in REST
+
+Feature	                       PUT                                         	PATCH
+Purpose               	Replace the entire resource	                   Update a part of the resource
+Idempotent?	              ✅ Yes	                                       ✅ Yes (technically), but may depend on usage
+Request Body	        Full representation of the resource        	   Partial representation (only the fields to change)
+Use Case	           When updating all fields or overwriting	       When updating only a few fields
+
+
+Use PUT when you're replacing the whole resource.
+Use PATCH when you're modifying only parts of the resource.
+
+
+
+24. Difference between put and post ? 
+Use POST to create a new resource (let the server assign an ID).
+Use PUT to create/update a resource at a known location.
+
+25. What is Idempotent in REST Services?
+ Idempotence means: No matter how many times you make the same request, the result will be the same.
+
+If you send the same request once or 100 times, the state on the server stays the same.
+
+Method	Idempotent?	                 Description
+GET	      ✅ Yes	                     Just fetches data. No state change.
+DELETE	  ✅ Yes	                     Deleting the same resource multiple times has the same effect — it's gone.
+PUT	      ✅ Yes	                     Replaces a resource. Doing it repeatedly sets it to the same state.
+PATCH	 ⚠️ Usually	                 Depends on how it's implemented. If it always applies the same result, then yes.
+POST	  ❌ No	                     Creates a new resource. Doing it multiple times creates multiple resources.
+
+
+26. What Does Stateless Mean in REST?
+Statelessness in REST means that each request from the client to the server must contain all the information needed to understand and
+ process the request.
+
+Key Points : 
+
+No session state is stored on the server between requests.
+The server treats each request independently.
+If the client needs to maintain state (e.g., login info), it must handle that itself — often via tokens (like JWT) passed in headers.
+
+
+Why Is Statelessness Important?
+
+      Benefit	    Explanation
+🔁  Scalabilityx	    Easy to distribute requests across servers
+🚀  Performance	    No server-side memory overhead per client
+✅  Simplicity	    Server logic is cleaner and more predictable
+🔒  Security	        State (like credentials) lives with the client
+
+
+
+Explain layers of application ? 
+
+We usually follow three tier architecture.
+We split our application as client-server architecture as follows : 
+Presentation Layer: (Angular, React To take some input from client and show) 
+Business Layer    : (
+Data Source.      : (
+
+
+Business layer is further divided in to 
+
+Controller Layer
+Business Layer 
+DAO Layer 
+
+
+
+How to create spring+Hibernate project from Scrach ? 
+
+Use Spring Intilizer to Create Spring Starter project and during creation we select 3 dependencies 
+
+spring-boot-starter-web 
+Spring-boot-starter-security
+Spring-boot-starter-jpa
+mysql-driver
+lombok
+
+
+
+What is Lombok ? 
+
+Project Lombok is a Java library tool which is used to minimize/remove boiler plate code and saves the precious time for developer during development. 
+We can Achieve this by using some annotations provided by Lombok. 
+It also increases the readability of the source code and saves some space.
+
+This will add in the .class file at compile time but not present in the source code.
+
+
+How to configure lombok in Eclipse or STS ?
+
+downaload and run executable file in the laptop and ensure you configured eclipse/ide/sts while installing lombok .exec table file. 
+
+
+Annontation used for lombok ?
+
+@Getter
+@Setter
+@ToString
+@Data  ( Combination of @Getter, @Setter, @Tostring and I think Default Constructor as well)
+@AllArgConstructor 
+@EqualsAndHashcode
+
+
+Difference Between Path Variable and Request Params? 
+
+"@PathVariable is used to extract values directly from the URI path, and it's typically used when we are referring to a specific resource. For example, in /users/101, 101 would be captured using @PathVariable.
+
+On the other hand, @RequestParam is used to extract values from the query string. It’s ideal for optional parameters, filtering, or pagination — for example: /users?page=2&sort=desc.
+
+So, the key difference is in where the data is coming from — @PathVariable is part of the route, while @RequestParam is part of the query string.
+
+Also, @PathVariable makes the URL more RESTful and resource-oriented, whereas @RequestParam is better for passing additional options or flags."
+
+
+@GetMapping("/users/{id}")
+public User getUser(@PathVariable Long id) {
+    // id is part of the path like /users/5
+}
+
+// Using RequestParam
+@GetMapping("/users")
+public List<User> getUsers(@RequestParam int page, @RequestParam int size) {
+    // values passed like /users?page=1&size=10
+}
+
+
+Why Spring Security is needed at first place?
+ 
+How Spring Security is used to secure application at High level?
+
+
+Types of authentication? 
+
+Knowledge Based Authentication      Possession based Authentication           Knowledge + Possession Based
+
+PASSWORD                             Text messages in Phones                   MultiFactor Auth
+PIN                                  Key Card or Badge                         Login to VDIs or AWS system.
+Answer to Personal or Security       Access Tokens
+question that u told ur app 
+during account creation 
+
+
+
+Core Concepts of SPRING Security ? 
+
+
+Authentication : Process of identifying the person trying to access the application 
+Authorization  : Process of identifying the person is allowed to do this operation. 
+Principal      :  Is the person that you have identified through Authentication Process. 
+                  It's also called Currently logged in user that we store in session.
+Granted Authority:  Are bunch or group of permissions which are allowed for a user. 
+Roles            : Group of Authorities that are assigned together. 
+                   E.g. Role_USER_loginand search
+                   Role_admin_login, search, create, update, employees.
+                   
+   
+Difference between @Component and @Bean ? 
+
+@Component is class level annotation(Created over a class)
+@Bean is method level annotation( Created over a method)                
+                   
+
+Feature	                          @Component	                                             @Bean
+Purpose	                      Class level Spring Annotation 	                            Method level annotation for creating beans.
+Use Case	                  Represents general purpose bean	                            Used to explicitly declare individual beans
+Creation of Instance:         Automatically Created and Managed by Spring                   Explicitly Defined in configuration Class 
+Discovery	                  Discovered automatically via scanning	                        Registered manually in a @Configuration
+Customization	              Less flexible	                                                Can control instantiation logic
+DOI                           Can be injected into other components through IOC Container   Can be injected into other components the method returning the bean is invoked.
+When to Use	For your own components (services, etc.)	For third-party classes or complex setup
+
+
+What is Spring Annotation ? 
+
+Spring Annotations are form of metadata that provides data about a program. 
+Annotations are used to provide supplemental information about program.
+It doesn't have a direct effect on the operation of the code they annotate. It doesn't change the action of the compiled program. 
+
+
+  
+Difference Between @Component, @Service, @Repository , @Controller ?
+@Component, @Service, @Repository , @Controller all these are stereotype annotations.
+@Service,@Respository,@Controller, these are special type of annotations(Sterotype) even though they  are sub class of @Componnet
+When Component scanning is happening, since these are Stereoptype annotations so go through Automatic Bean registrations.
+
+
+@Service: Just simple as @Component and doesn't have any special logic associated with it. It is usually annotated a class with any business logic is included. 
+
+@Controller is a specialization of @Component hinting that annotated class is web controller. 
+@Restcontroller: A convenience annotation that is itself annotated with @Controller and @ResponseBody
+
+
+
+Automatic bean Registration in Spring Boot ? 
+Automatic Bean Registration in Spring Boot means that Spring automatically detects and registers beans (objects managed by the Spring container) without explicitly declaring them in configuration files (like XML or Java config).
+
+How does it work?
+Spring Boot uses component scanning to automatically find and register beans annotated with stereotype annotations such as:
+
+@Component,@Service,@Repository,@Controller,@RestController,@Configuration
+These beans are scanned and registered automatically if they are located in the base package or a sub-package of your application class (the one with @SpringBootApplication).
+
+
+Non-SterioType Annotations in spring boot ? 
+@RequestMapping(For Handling Requests), @Autowired(For DI) When Spring sees these annotations, it doesn't create beans automatically in container.
+
+
+how does @Repository works internally? 
+
+Any class that holds the database or persistent logic is annotated with @Repository. In other words DTO/DAO is annotated with @Repository.
+
+This Annotation is just an alias of @Component. 
+One of the Benefits we get using @Repository is that it enables Spring's exception translation mechanism. 
+
+This can make the exception handling more conveninet in the context of data acess. 
+The exception translation mechanism happens automatically when @Repository.
+This Mechanism catches checked exception related to persistence and translates them into Spring's DataAccessException, Which is Runtime exception. 
+
+PeristanceExceptionTranslatonPostProcessor is responsible for this.
+
+
+
+how PeristanceExceptionTranslatonPostProcessor works ? 
+
+It is responsible for Adding an AOP(Aspect oriented Programming) advice to methods annotated with @Respository. 
+
+Automatic Exception Translation: 
+
+When a method annotated with @Repository is invoked, the added advice intercepts the method execution. 
+if method throws a checked persistance related exception like : SQLException the advice translate it into A runtime DataAccessException. 
+
+
+What is Same origin policy(SOP) ? 
+The Same-origin policy(SOP) is a web security mechanism built into web browsers that influences how websites can access one another.
+
+Without SOP a malicious web sites or web application could access another without any restrictions.
+That would allow attackers to easily steal sensitive information from other websites or even perform actions on other sites without user consent. 
+
+SOP doesn't need to turned on- it automatically enabled in every browser that supports it. 
+
+The SOP mechanism was designed to protect against attacks such as cross-site request forgery(CSRF), 
+which is basically attempt to take advantage of vulnerabilities due to different origins.
+ 
+What is Origin ? 
+Two Urls have same origin if the protocol, port(if specified), and host are the same for both 
+Eg: http://x.y.com/z/page.html
+
+
+What is CORS in Springboot ?
+
+CORS is Cross Origin Resource Sharing. 
+It's a violation of Same origin Policy of Browsers. 
+
+use@CrossOrigin annotation or send Access-Control-Allow-Origin: http://localhost:3000 in your header to allow it.
+
+
+ What is the Second Highest Salary in EMP table ? 
+ 
+ 2nd and third is fine. 
+ 
+ Select max(salary) from Employee where salary <=( Select max(salary) from Employee)
+ 
+ select * from employee 
+ order by salary desc 
+ Limit 0,1
+ 
+ 
+ select * from employee 
+ order by salary desc 
+ Limit 2,1
+ 
+ 
+
+
